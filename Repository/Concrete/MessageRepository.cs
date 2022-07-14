@@ -14,13 +14,13 @@ namespace Repository.Concrete
     {
         public MessageRepository(AppDbContext context) : base(context) { }
 
-        public async Task<Message> GetMessageAsync(int id)
+        public async Task<Message?> GetMessageAsync(int id)
         {
             return await _context.Messages.FirstOrDefaultAsync(x => x.Id == id);
         }
-        public async Task<List<Message>> GetAllMessagesAsync()
+        public IQueryable<Message> GetAllMessagesAsync()
         {
-            return await _context.Messages.ToListAsync();
+            return _context.Messages;
         }
         public async Task<bool> SaveMessageAsync(Message Message)
         {

@@ -28,7 +28,7 @@ namespace ExampleProjectAPI.Controllers
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             //should never happen, but just in case
-            if (user == null) return BadRequest("Not logged in");
+            if (user == null) return Unauthorized("Not logged in");
             var userId = user.Id;
             var userName = User.Identity.Name;
 
@@ -36,15 +36,15 @@ namespace ExampleProjectAPI.Controllers
             messageInDto.SenderName = userName;
 
             var receiver = await _userManager.FindByNameAsync(messageInDto.ReceiverName);
-            if (receiver == null) return BadRequest("Cant find recipent");
+            if (receiver == null) return NotFound("Cant find recipent");
             var receiverId = receiver.Id;
 
             messageInDto.ReceiverId = receiverId;
             if (messageInDto.SenderId == messageInDto.ReceiverId) return BadRequest("Cant send message to yourself");
 
-
             var result = await _messageService.AddNewMessageAsync(messageInDto);
-            return result ? Ok("Message Sent") : BadRequest();
+
+            return result != null ? CreatedAtAction(nameof(GetMessageAsync), new {id = result.Id}, result) : BadRequest();
         }
 
         [EnableCors("CorsPolicy")]

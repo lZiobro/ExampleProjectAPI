@@ -14,11 +14,6 @@ namespace Service.MappingsProfiles
         public MessageProfile()
         {
             CreateMap<MessageInDto, Message>();
-            /* no mapping like this, as itll cause unnecessary queries, add a field for this in message model and use const names
-            CreateMap<Message, MessageOutDto>()
-                .ForMember(dest => dest.SenderUserName, act => act.MapFrom(src => src.Sender.UserName))
-                .ForMember(dest => dest.ReceiverUserName, act => act.MapFrom(src => src.Receiver.UserName));
-            */
             CreateMap<Message, MessageOutDto>();
         }
     }

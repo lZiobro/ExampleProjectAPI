@@ -22,25 +22,26 @@ namespace Service.Concrete
             this._mapper = mapper;
         }
 
-        public async Task<bool> AddNewMessageAsync(MessageInDto messageInDto)
+        public async Task<MessageOutDto?> AddNewMessageAsync(MessageInDto messageInDto)
         {
             var newMessage = _mapper.Map<Message>(messageInDto);
-            newMessage.DateSend = DateTime.Now;
-            newMessage.Read = false;
+            if (newMessage.DateSend == default) newMessage.DateSend = DateTime.Now;
             bool result = await _messageRepository.SaveMessageAsync(newMessage);
-            return result;
+            if(!result) return null;
+            var newMessageMapped = _mapper.Map<MessageOutDto>(newMessage);
+            return newMessageMapped;
         }
 
         public async Task<List<MessageOutDto>> GetAllUserMessagesOutAsync(string userId)
         {
-            var messages = await _messageRepository.GetAllMessagesAsync();
+            var messages = _messageRepository.GetAllMessagesAsync();
             var userMessages = messages.Where(x => x.SenderId == userId);
             var mappedMessages = _mapper.Map<List<MessageOutDto>>(userMessages);
             return mappedMessages;
         }
         public async Task<List<MessageOutDto>> GetAllUserMessagesInAsync(string userId)
         {
-            var messages = await _messageRepository.GetAllMessagesAsync();
+            var messages = _messageRepository.GetAllMessagesAsync();
             var userMessages = messages.Where(x => x.ReceiverId == userId);
             var mappedMessages = _mapper.Map<List<MessageOutDto>>(userMessages);
             return mappedMessages;

@@ -35,7 +35,7 @@ namespace ExampleProjectAPI.Controllers
             this._authenticationSettings = authenticationSettings;
             this._mapper = mapper;
         }
-
+        #region helperMethods
         private async Task<FileContentResult?> getProfilePictureAsync(ApplicationUser user)
         {
             var path = _webHostEnvironment.ContentRootPath + "uploads\\images\\users\\" + user.UserName + '\\';
@@ -63,7 +63,7 @@ namespace ExampleProjectAPI.Controllers
 
             return user;
         }
-
+        #endregion
         [EnableCors("CorsPolicy")]
         [HttpPost("register")]
         public async Task<IActionResult> RegisterNewApplicationUserAsync(ApplicationUserInDto applicationUserInDto)
@@ -197,6 +197,7 @@ namespace ExampleProjectAPI.Controllers
             if (profilePicture?.Length == 0) return BadRequest("Empty file");
 
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user == null) return Unauthorized();
             var path = _webHostEnvironment.ContentRootPath + "uploads\\images\\users\\" + User.Identity.Name + '\\';
 
             var imageName = "pfp" + DateTime.Now.ToString("yyyyMMddhhmmfff") + ".jpg";

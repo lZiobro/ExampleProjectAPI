@@ -9,7 +9,7 @@ namespace Service.Abstract
 {
     public interface IMessageService
     {
-        Task<bool> AddNewMessageAsync(MessageInDto messageInDto);
+        Task<MessageOutDto?> AddNewMessageAsync(MessageInDto messageInDto);
         Task<MessageOutDto?> GetMessageAsync(int id);
         Task<List<MessageOutDto>> GetAllUserMessagesOutAsync(string userId);
         Task<List<MessageOutDto>> GetAllUserMessagesInAsync(string userId);
